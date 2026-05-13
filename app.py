@@ -66,7 +66,7 @@ with streamlit_analytics.track():
             with st.spinner("정보를 분석하고 있습니다..."):
                 try:
                     model = genai.GenerativeModel(
-                        model_name='gemini-2.5-flash-lite',
+                        model_name='gemini-2.5-flash-lite'
                     )
                     
                     prompt = """

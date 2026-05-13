@@ -67,7 +67,7 @@ with streamlit_analytics.track():
                 try:
                     model = genai.GenerativeModel(
                         model_name='gemini-2.5-flash-lite',
-                        tools=[{'google_search': {}}] 
+                        tools=["google_search"]
                     )
                     
                     prompt = """

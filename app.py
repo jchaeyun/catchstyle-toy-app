@@ -3,62 +3,68 @@ import google.generativeai as genai
 from PIL import Image
 import streamlit_analytics2 as streamlit_analytics
 
-# 1. API 키 설정 (본인의 키로 교체하세요)
+# 1. API 키 설정 (스트림릿 비밀 금고 연동)
 API_KEY = st.secrets["GOOGLE_API_KEY"]
 genai.configure(api_key=API_KEY)
 
-# 2. 토스 스타일 디자인 적용 (CSS)
-st.set_page_config(page_title="패션 렌즈 MVP", layout="centered")
+# 2. 미니멀/클린 무드 CSS 주입
+st.set_page_config(page_title="Fashion Lens", layout="centered")
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap');
-    html, body, [class*="css"] { font-family: 'Noto Sans KR', sans-serif; background-color: #f2f4f6; }
-    .main { background-color: #f2f4f6; }
-    /* 카드형 컨테이너 */
+    /* 폰트: 깔끔한 산세리프 폰트 적용 */
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+    html, body, [class*="css"] { font-family: 'Pretendard', sans-serif; background-color: #FAFAFA; }
+    .main { background-color: #FAFAFA; }
+    
+    /* 카드 컨테이너: 그림자 제거, 얇은 테두리 */
     .stImage, .stMarkdown {
         background-color: white;
-        padding: 20px;
-        border-radius: 20px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-        margin-bottom: 15px;
+        padding: 24px;
+        border-radius: 8px;
+        border: 1px solid #EAEAEA;
+        margin-bottom: 16px;
     }
-    /* 토스 블루 버튼 */
+    
+    /* 시크한 블랙 버튼 */
     div.stButton > button {
         width: 100%;
-        background-color: #3182f6;
-        color: white;
-        border-radius: 12px;
+        background-color: #111111;
+        color: #FFFFFF;
+        border-radius: 4px;
         border: none;
-        padding: 14px;
-        font-weight: 700;
-        font-size: 17px;
-        transition: 0.2s;
+        padding: 16px;
+        font-weight: 500;
+        font-size: 16px;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
     }
-    div.stButton > button:hover { background-color: #1b64da; color: white; }
-    /* 제목 스타일 */
-    h1 { color: #191f28; font-size: 26px; font-weight: 900; margin-bottom: 5px; }
-    p { color: #4e5968; }
+    div.stButton > button:hover { background-color: #333333; color: white; border: none; }
+    
+    /* 파일 업로더 점선 스타일 */
+    .stFileUploader { border: 1px dashed #CCCCCC; background-color: transparent; border-radius: 8px; padding: 20px; }
+    
+    /* 텍스트 스타일링 */
+    h1 { color: #111111; font-weight: 700; font-size: 28px; letter-spacing: -0.5px; text-align: center; }
+    p { color: #555555; text-align: center; margin-bottom: 30px; font-size: 15px; }
     </style>
     """, unsafe_allow_html=True)
 
-# 3. 분석 트래킹 시작 및 화면 UI 구성
+# 3. 화면 UI 구성 및 분석 트래커 실행
 with streamlit_analytics.track():
-    st.title("패션 렌즈")
-    st.write("사진 속 연예인이 입은 옷을 바로 찾아드릴게요.")
+    st.markdown("<h1>Fashion Lens</h1>", unsafe_allow_html=True)
+    st.markdown("<p>궁금한 아이템의 사진을 올려주세요.</p>", unsafe_allow_html=True)
 
     # 업로드 섹션
     uploaded_file = st.file_uploader("", type=['jpg', 'png', 'jpeg'])
 
     if uploaded_file:
-        # 이미지 표시
         img = Image.open(uploaded_file)
         st.image(img, use_container_width=True)
         
         # 분석 버튼
-        if st.button("어디 건지 찾아보기"):
-            with st.spinner("구글 검색으로 정보를 분석하고 있어요..."):
+        if st.button("제품 정보 확인하기"):
+            with st.spinner("정보를 분석하고 있습니다..."):
                 try:
-                    # 구글 검색 기능이 탑재된 Gemini 모델 호출
                     model = genai.GenerativeModel(
                         model_name='gemini-1.5-flash',
                         tools=[{'google_search_retrieval': {}}] 
@@ -71,8 +77,7 @@ with streamlit_analytics.track():
                     
                     response = model.generate_content([prompt, img])
                     
-                    # 결과 출력
-                    st.markdown("### 🔍 분석 결과")
+                    st.markdown("### 🔍 Analysis Result")
                     st.markdown(response.text)
                     
                 except Exception as e:

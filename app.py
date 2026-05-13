@@ -65,9 +65,8 @@ with streamlit_analytics.track():
         if st.button("제품 정보 확인하기"):
             with st.spinner("정보를 분석하고 있습니다..."):
                 try:
-                    model = genai.GenerativeModel(
-                        model_name='gemini-1.5-flash-latest',
-                        tools=[{'google_search_retrieval': {}}] 
+                   model = genai.GenerativeModel(
+                    model_name='gemini-1.5-flash-latest'
                     )
                     
                     prompt = """

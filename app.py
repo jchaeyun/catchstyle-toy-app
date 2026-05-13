@@ -66,7 +66,7 @@ with streamlit_analytics.track():
             with st.spinner("정보를 분석하고 있습니다..."):
                 try:
                     model = genai.GenerativeModel(
-                        model_name='gemini-3.1-flash-lite-preview',
+                        model_name='gemini-2.0-flash-lite',
                         tools=[{'google_search_retrieval': {}}] 
                     )
                     
